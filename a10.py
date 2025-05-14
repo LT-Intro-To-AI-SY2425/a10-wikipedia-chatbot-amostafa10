@@ -113,7 +113,7 @@ def get_birth_date(name: str) -> str:
 
 def get_release_date(name: str) -> str:
     infobox_text = clean_text(get_first_infobox_text(get_page_html(name)))
-    pattern = r"(?:Born\D*)(?P<birth>\d{4}-\d{2}-\d{2})"
+    pattern = r"(?<=Release date)s?[\s\n]*?(?P<release>.*?[0-9]{4})"
     error_text = (
         "Page infobox has no release date information"
     )
