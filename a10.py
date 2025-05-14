@@ -111,7 +111,7 @@ def get_birth_date(name: str) -> str:
 
     return match.group("birth")
 
-def get_release_date(name: str) -> str:
+def get_movie_release(name: str) -> str:
     infobox_text = clean_text(get_first_infobox_text(get_page_html(name)))
     pattern = r"(?<=Release date)s?[\s\n]*?(?P<release>.*?[0-9]{4})"
     error_text = (
@@ -121,11 +121,19 @@ def get_release_date(name: str) -> str:
 
     return match.group("release")
 
+def get_game_release(name: str) -> str:
+    infobox_text = clean_text(get_first_infobox_text(get_page_html(name)))
+    pattern = r"(?<=Release).|\n*?(?P<release>.*?\d{4})"
+    error_text = (
+        "Page infobox has no release date information"
+    )
+    match = get_match(infobox_text, pattern, error_text)
+
+    return match.group("release")
 
 # below are a set of actions. Each takes a list argument and returns a list of answers
 # according to the action and the argument. It is important that each function returns a
 # list of the answer(s) and not just the answer itself.
-
 
 def birth_date(matches: List[str]) -> List[str]:
     """Returns birth date of named person in matches
@@ -151,8 +159,10 @@ def polar_radius(matches: List[str]) -> List[str]:
     return [get_polar_radius(matches[0])]
 
 def movie_release(matches: List[str]) -> List[str]:
-    return [get_release_date(" ".join(matches))]
+    return [get_movie_release(" ".join(matches))]
 
+def game_release(matches: List[str]) -> List[str]:
+    return [get_game_release(" ".join(matches))]
 
 # dummy argument is ignored and doesn't matter
 def bye_action(dummy: List[str]) -> None:
@@ -170,10 +180,10 @@ pa_list: List[Tuple[Pattern, Action]] = [
     ("when was % born".split(), birth_date),
     ("what is the polar radius of %".split(), polar_radius),
     ("when was the movie % released".split(), movie_release),
+    ("when was the game % released".split(), game_release),
 
     (["bye"], bye_action),
 ]
-
 
 def search_pa_list(src: List[str]) -> List[str]:
     """Takes source, finds matching pattern and calls corresponding action. If it finds
