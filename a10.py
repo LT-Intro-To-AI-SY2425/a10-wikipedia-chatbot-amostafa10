@@ -144,7 +144,7 @@ def get_game_developer(name: str) -> str:
 def get_food_origin(name: str) -> str:
     infobox_text = clean_text(get_first_infobox_text(get_page_html(name)))
 
-    pattern = r"(?<=Place of origin)(?P<origin>[A-Z][a-z]+)"
+    pattern = r"(?<=Place of origin)(?P<origin>[\w ]*?[a-z])(?=[A-Z])"
     error_text = (
         "Page infobox has no place of origin information"
     )
