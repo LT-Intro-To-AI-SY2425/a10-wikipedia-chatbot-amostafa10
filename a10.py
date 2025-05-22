@@ -68,7 +68,7 @@ def get_match(
     Returns:
         text that matches
     """
-    p = re.compile(pattern, re.DOTALL | re.IGNORECASE)
+    p = re.compile(pattern, re.DOTALL)
     match = p.search(text)
 
     if not match:
@@ -141,6 +141,17 @@ def get_game_developer(name: str) -> str:
 
     return match.group("developer")
 
+def get_food_origin(name: str) -> str:
+    infobox_text = clean_text(get_first_infobox_text(get_page_html(name)))
+
+    pattern = r"(?<=Place of origin)(?P<origin>[A-Z][a-z]+)"
+    error_text = (
+        "Page infobox has no place of origin information"
+    )
+    match = get_match(infobox_text, pattern, error_text)
+
+    return match.group("origin")
+
 # below are a set of actions. Each takes a list argument and returns a list of answers
 # according to the action and the argument. It is important that each function returns a
 # list of the answer(s) and not just the answer itself.
@@ -177,6 +188,9 @@ def game_release(matches: List[str]) -> List[str]:
 def game_developer(matches: List[str]) -> List[str]:
     return [get_game_developer(" ".join(matches))]
 
+def food_origin(matches: List[str]) -> List[str]:
+    return [get_food_origin(" ".join(matches))]
+
 # dummy argument is ignored and doesn't matter
 def bye_action(dummy: List[str]) -> None:
     raise KeyboardInterrupt
@@ -195,6 +209,7 @@ pa_list: List[Tuple[Pattern, Action]] = [
     ("when was the movie % released".split(), movie_release),
     ("when was the game % released".split(), game_release),
     ("who developed the game %".split(), game_developer),
+    ("where did % originate".split(), food_origin),
     (["bye"], bye_action),
 ]
 
