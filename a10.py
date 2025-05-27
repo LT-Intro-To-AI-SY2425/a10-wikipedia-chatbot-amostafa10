@@ -123,7 +123,7 @@ def get_movie_release(name: str) -> str:
 
 def get_game_release(name: str) -> str:
     infobox_text = clean_text(get_first_infobox_text(get_page_html(name)))
-    pattern = r"(?<=Release)[\n\s]*?(?P<release>.*?\d{4})"
+    pattern = r"[R|r]elease[\n\s]*?(?P<release>.*?\d{4})"
     error_text = (
         "Page infobox has no release date information"
     )
